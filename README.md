@@ -1,6 +1,6 @@
 # MiniSOC
 
-Application légère de supervision défensive **pour laboratoire** : elle importe des journaux SSH et HTTP depuis des fichiers, les normalise en événements communs, applique trois règles de corrélation (R1 répétitions SSH, R2 erreurs HTTP, R3 pic de volume), enregistre alertes et historique dans SQLite et les affiche dans un tableau de bord exportable.
+Application légère de supervision défensive **pour laboratoire** : elle importe des journaux SSH et HTTP depuis des fichiers, les normalise en événements communs, applique trois règles de corrélation (R1 répétitions SSH, R2 erreurs HTTP, R3 pic de volume), enregistre alertes et historique dans SQLite et les affiche dans un tableau de bord Streamlit exportable.
 
 > Une alerte est un indice documenté, pas la preuve qu'une attaque a réussi.
 
@@ -8,12 +8,39 @@ Application légère de supervision défensive **pour laboratoire** : elle impor
 
 | Élément | État |
 |---|---|
-| Structure du dépôt | Fait |
+| Structure du dépôt et publication sur GitHub | Fait |
 | Décisions de cadrage | Fait (voir [`DECISIONS.md`](DECISIONS.md)) |
 | Sources consultées | Fait (voir [`docs/SOURCES.md`](docs/SOURCES.md)) |
-| Jeux de logs SSH synthétiques (référence + signaux) | Fait |
+| Jeux de logs SSH synthétiques (référence + signaux) | À faire |
+| Environnement Python et installation de Streamlit | Fait |
 | Jeux de logs HTTP | À faire |
 | Parsers, SQLite, règles, tableau de bord, export | À faire |
+
+## Technologies
+
+- Python (développé avec Python 3.15)
+- Streamlit pour le tableau de bord
+- SQLite (module `sqlite3` de Python) pour les événements et les alertes
+
+## Prérequis et installation
+
+Prérequis : Python 3.11 ou plus récent et `pip`. Sous Windows, utiliser la commande `py`.
+
+```bat
+git clone https://github.com/doomerC/minisoc.git
+cd minisoc
+py -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+## Lancement
+
+À compléter une fois `app.py` écrit. La commande prévue est :
+
+```bat
+streamlit run app.py
+```
 
 ## Architecture prévue
 
@@ -25,30 +52,24 @@ Fichiers SSH / HTTP -> validation et parsing -> événements normalisés -> SQLi
 
 ```
 minisoc/
-├── app.py              application web et tableau de bord (à écrire)
+├── app.py              tableau de bord Streamlit (à écrire)
 ├── db.py               SQLite : tables et initialisation (à écrire)
 ├── parsers.py          parsers SSH et HTTP (à écrire)
 ├── rules.py            règles R1, R2, R3 (à écrire)
-├── requirements.txt
+├── requirements.txt    dépendances (streamlit)
 ├── README.md
 ├── DECISIONS.md        décisions prises
 ├── LICENSE
-├── data/               jeux de logs synthétiques et scénarios
+├── data/               jeux de logs synthétiques et scénarios (à ajouter)
 ├── docs/               RULES.md, SOURCES.md, SOURCES.pdf
 ├── exports/            rapports d'alertes exportés
 ├── screenshots/        captures du tableau de bord
-└── tests/              check_r1.py et tests
+└── tests/              tests (à ajouter)
 ```
 
 ## Jeux de logs
 
-| Fichier | Contenu |
-|---|---|
-| `data/ssh_reference.log` | SSH synthétique, activité normale : aucune alerte R1 attendue |
-| `data/ssh_signals.log` | SSH synthétique avec 5 scénarios (S1 à S5) et des lignes invalides |
-| `data/SCENARIOS_SSH.md` | Description des scénarios et résultats attendus |
-
-Les données sont synthétiques (adresses IP de documentation RFC 5737). Le script `tests/check_r1.py` recalcule R1 de façon indépendante pour comparer avec le moteur de règles.
+À faire : deux jeux synthétiques (référence et signaux) pour SSH et pour HTTP, avec la description de leurs scénarios.
 
 ## Règles
 
@@ -59,10 +80,6 @@ Détail et seuils : [`docs/RULES.md`](docs/RULES.md).
 | R1 – Répétitions SSH | au moins N échecs depuis une même IP en T minutes | N = 5, T = 5 min (valeurs pédagogiques) |
 | R2 – Erreurs HTTP | au moins N réponses 4xx/5xx sur une fenêtre | à définir |
 | R3 – Pic de volume | requêtes au-dessus d'un seuil sur une fenêtre | à définir |
-
-## Prérequis, installation, lancement, import
-
-À compléter une fois l'application écrite.
 
 ## Décisions et sources
 
