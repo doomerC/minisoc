@@ -44,13 +44,67 @@ streamlit run app.py
 
 ## Architecture prévue
 
-```
+```text
 Fichiers SSH / HTTP -> validation et parsing -> événements normalisés -> SQLite -> moteur de règles -> alertes -> tableau de bord et export
+```
+
+## Vérification de la base de données
+
+SQLite permet de vérifier les tables, leurs colonnes et les données enregistrées.
+
+Ouvrir la base de données :
+
+```bat
+py -c "import sqlite3; print(sqlite3.connect('minisoc.db').execute('SELECT sqlite_version()').fetchone())"
+```
+
+Si la base est ouverte avec l'outil SQLite en ligne de commande :
+
+```sql
+.tables
+```
+
+Afficher la structure des tables :
+
+```sql
+.schema events
+.schema alerts
+.schema imports
+```
+
+Vérifier les colonnes de chaque table :
+
+```sql
+PRAGMA table_info(events);
+PRAGMA table_info(alerts);
+PRAGMA table_info(imports);
+```
+
+Vérifier le nombre d'enregistrements :
+
+```sql
+SELECT COUNT(*) FROM events;
+SELECT COUNT(*) FROM alerts;
+SELECT COUNT(*) FROM imports;
+```
+
+Afficher les données enregistrées :
+
+```sql
+SELECT * FROM events;
+SELECT * FROM alerts;
+SELECT * FROM imports;
+```
+
+Fermer SQLite :
+
+```sql
+.quit
 ```
 
 ## Structure du dépôt
 
-```
+```text
 minisoc/
 ├── app.py              tableau de bord Streamlit (à écrire)
 ├── db.py               SQLite : tables et initialisation (à écrire)
